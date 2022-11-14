@@ -4,6 +4,9 @@
 *.bib
 *.pdf
 *.tar.gz
+!sclewis.tex
+!sclewis.bib
+!zotero.bib
 
 # LaTeX temp files
 *.aux
@@ -17,3 +20,4 @@
 *.lot
 *.out
 *.toc
+*.synctex.gz

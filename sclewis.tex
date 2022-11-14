@@ -1,0 +1,94 @@
+%%
+%% This is file `template.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% drexel-thesis.dtx  (with options: `template')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright (C) 2010-2012 W. Trevor King
+%% 
+%% This file may be distributed and/or modified under the conditions of
+%% the LaTeX Project Public License, either version 1.3 of this license
+%% or (at your option) any later version.  The latest version of this
+%% license is in:
+%% 
+%%    http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3 or later is part of all distributions of LaTeX version
+%% 2003/06/01 or later.
+%% 
+\documentclass{drexel-thesis}
+
+%% Enter the appropriate information here
+\author{Sean C. Lewis}    % Fullname
+\title{Effects of Early Forming Massive Stars and A Novel Method for Data Transfer Between Voronoi Mesh and Cartesian Adaptive Grid Codes}     % Title Of Thesis
+\DUTmonth{June}  % Name of the month of you defense
+\DUTyear{2023}   % Year you are defending
+\degree{Doctor of Philosophy in Physics}    % Your target degree, spelled out
+\advisor{Stephen L. W. McMillan}   % Advisor's full name, degree
+\copyrighttext{} % If not "All Rights Reserved."
+
+%% unsrt style give references in order of citation
+\bibliographystyle{unsrt}
+
+\begin{document}
+\begin{preamble}
+
+\begin{dedications} % OPTIONAL
+I dedicate this to Joe. \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ Joe Mama.
+\end{dedications}
+
+\begin{acknowledgments} % OPTIONAL
+%% Type acknowledgments here
+\end{acknowledgments}
+
+\tableofcontents
+\listoftables  % If you have tables
+\listoffigures % If you have figures
+
+\begin{abstract}
+We present a controlled experiment using the coupled magnetohydrodynamical N-body dynamics stellar evolution code \texttt{Torch} that explores the effects of early forming massive stars on star cluster formation and assembly. We also present a novel method to convert output data from Voronoi mesh codes to an adaptive block-based grid code. 
+\end{abstract}
+\end{preamble}
+
+\begin{thesis}
+%% If your thesis does not use \part{}s, you may want to add a
+%% part-level PDF bookmark to set the main matter of from the front
+%% matter.
+%%\pdfbookmark[-1]{Main Matter}{Main Matter}
+
+%% Use include statements to include your main thesis code
+%% from separate files.
+%%\include{part1}
+%%...
+\pdfbookmark[-1]{Main Matter}{Main Matter}
+\chapter{Introduction}
+Broad strokes intro. Star formation in a galactic context.
+\section{}
+
+\chapter{Early Forming Massive Stars Suppress Star Formation and Hierarchical Cluster Assembly}
+
+\chapter{VorAMR: A novel method of converting Voronoi mesh to an adaptive block data structure for visualization and codebase migration}
+
+\chapter{Conclusions and Future Work}
+
+\end{thesis}
+
+\bibliography{references} % Include references.bib BibTeX
+
+\appendix % If you have appendices
+%% include files with your appendicies (if any) here
+%%\include{appendixA}
+%%...
+
+\begin{vita} % Ph.D. only.
+%%Vita text.
+\end{vita}
+
+\end{document}
+\endinput
+%%
+%% End of file `template.tex'.
