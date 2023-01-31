@@ -20,7 +20,7 @@
 %% and version 1.3 or later is part of all distributions of LaTeX version
 %% 2003/06/01 or later.
 %% 
-\documentclass{drexel-thesis}
+\documentclass[twoside]{drexel-thesis}
 
 %% Enter the appropriate information here
 \author{Sean C. Lewis}    % Fullname
@@ -32,13 +32,19 @@
 \copyrighttext{} % If not "All Rights Reserved."
 
 %% unsrt style give references in order of citation
-\bibliographystyle{unsrt}
+%\bibliographystyle{unsrt}
+
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+\setcitestyle{authoryear,open={(},close={)}} %Citation-related commands
+\usepackage{hyperref}
+\hypersetup{colorlinks,linkcolor={blue},citecolor={black},urlcolor={red}} 
 
 \begin{document}
 \begin{preamble}
 
 \begin{dedications} % OPTIONAL
-I dedicate this to Joe. \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ Joe Mama.
+
 \end{dedications}
 
 \begin{acknowledgments} % OPTIONAL
@@ -67,12 +73,117 @@ We present a controlled experiment using the coupled magnetohydrodynamical N-bod
 \pdfbookmark[-1]{Main Matter}{Main Matter}
 \chapter{Introduction}
 Broad strokes intro. Star formation in a galactic context.
-\section{}
+\section{Physics Star Cluster Formation}
 
-\chapter{Early Forming Massive Stars Suppress Star Formation and Hierarchical Cluster Assembly}
+\section{History of Computation of Star Cluster Formation}
 
-\chapter{VorAMR: A novel method of converting Voronoi mesh to an adaptive block data structure for visualization and codebase migration}
+\section{My Work: Star Cluster Formation}
 
+\section{My Work: Bridging Computational Methods}
+
+\chapter[Early-Forming Massive Stars]{Early-Forming Massive Stars Suppress Star Formation and Hierarchical Cluster Assembly}
+Sean C. Lewis, Stephen L. W. McMillan, Mordecai-Mark Mac Low, Claude Cournoyer-Cloutier, Brooke Polak, Martijn J. C. Wilhelm, Aaron Tran, Alison Sills, Simon Portegies Zwart, Ralf S. Klessen, Joshua Wall
+
+\emph{submitted to the Astrophysical Journal}
+
+\centerline{\textbf{Abstract}}
+
+Feedback from massive stars plays an important role in the formation of star clusters. Whether a very massive star is born early or late in the cluster formation timeline has profound implications for the star cluster formation and assembly processes. We carry out a controlled experiment to characterize the effects of early forming massive stars on star cluster formation. We use the star formation software suite \texttt{Torch}, combining self-gravitating magnetohydrodynamics, ray-tracing radiative transfer, $N$-body dynamics, and stellar feedback to model four initially identical $10^4$ M$_\odot$ giant molecular clouds with a Gaussian density profile peaking at $521.5 \mbox{ cm}^{-3}$. Using the \texttt{Torch} software suite through the \texttt{AMUSE} framework we modify three of the models to ensure that the first star that forms is very massive (50, 70, 100 M$_\odot$).
+Early forming massive stars disrupt the natal gas structure, resulting in fast evacuation of the gas from the star forming region. The star formation rate is suppressed, reducing the total mass of stars formed.  Our fiducial control model without an early massive star has a larger star formation rate and efficiency by up to a factor of three compared to the other models. 
+Early forming massive stars promote the buildup of spatially separate and gravitationally unbound subclusters, while the control model forms a single massive cluster. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Paper 1 Introduction %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+\label{sec:p1-intro}
+The process of star cluster formation involves a wide range of physical processes that remain not entirely understood. Reviews of the field include \citet{mac_low_control_2004}, \citet{mckee_theory_2007}, \citet{portegies_zwart_young_2010}, \citet{klessen_physical_2016}, \citet{krumholz_star_2019}, \citet{girichidis_physical_2020}, and \citet{krause_physics_2020}. 
+
+A star cluster requires millions of years to form and is deeply embedded in dense gas and dust for a significant portion of that time \citep{lada_embedded_2003,chevance_molecular_2020}. Therefore, relying on observations to understand the formation process remains difficult. Computational models provide essential insights to this process. These models have established that cloud properties and galactic influences strongly regulate the conversion of gas into stars within clouds undergoing hierarchical collapse.
+These include the turbulent velocity field \citep{ostriker_kinetic_1999,klessen_gravitational_2000}, magnetic field strength and orientation \citep{mckee_dynamical_1999}, gas density profile \citep{chen_effects_2021}, the multiphase nature of the interstellar medium \citep[ISM;][]{ostriker_regulation_2010}, galactic mergers \citep{dobbs_formation_2020}, the galactic gravity field \citep{li_star_2019}, and galactic jets \citep{mandal_impact_2021}.
+
+The feedback from massive stars probably dominates the self-regulation of the star formation process. Computational models have shown that massive stellar feedback including ionizing radiation \citep{matzner_role_2002, dale_ionizing_2012}, non-ionizing radiation \citep{howard_universal_2018}, stellar winds \citep{dale_before_2014, rahner_winds_2017}, and supernovae \citep{rogers_feedback_2013, smith_supernova_2018} can disrupt the parental giant molecular clouds (GMCs) and shut down star formation. For a general review of feedback models employed in many current star cluster formation simulations, see \citet{dale_modelling_2015}. Without these mechanisms, the gravitational collapse of the cloud would continue unimpeded, converting all of the natal gas into stars, in stark contrast to observations of such regions \citep{ostriker_regulation_2010,chevance_life_2022}. 
+ 
+Massive stellar feedback is also thought to regulate sub-cluster structure and assembly. The hierarchical assembly of clusters has been both observed \citep{bressert_spatial_2010, longmore_formation_2014, gouliermis_hierarchical_2017} and demonstrated computationally \citep{maschberger_properties_2010, howard_universal_2018, grudic_top_2018, vazquez-semadeni_hierarchical_2017, vazquez-semadeni_global_2019, chen_effects_2021, dobbs_formation_2022, guszejnov_cluster_2022}. Gas evacuation (via stellar feedback) is crucial to the completion of the assembly process \citep{grudic_top_2018,krause_physics_2020}. In addition, it has been established that \emph{how} the gas is removed from a cluster can potentially affect the cluster structure \citep{smith_infant_2013}. Rapidly evacuated gas can result in cluster destruction or dissolution through the unbinding of stars \citep{lada_embedded_2003,portegies_zwart_young_2010, banerjee_how_2017}. \citet{gavagnin_star_2017} also found weak correlation between feedback strength and unbinding of stars and \citet{li_disruption_2019} saw some dispersal of stars at the highest feedback levels in their parameter study. However, there has been little research as to the effects of \emph{when} gas removal occurs. With our computational model, we test the effects of early forming massive stars on cluster formation and the hierarchical cluster assembly process.
+ 
+Massive star feedback mechanisms have been shown to slow star formation and contribute to the destruction of the natal cloud. In order to accurately model star cluster formation, each feedback mechanism must be modeled simultaneously within the same computational model. Doing so at the appropriate level of sophistication provides a more realistic star cluster formation framework from which simulations can be constructed. Several recent efforts have created such a framework by combining multiple massive star feedback mechanisms with magnetohydrodynamical (MHD) solvers  \citep{rogers_feedback_2013, dale_before_2014,lancaster_star_2021,grudic_starforge_2021}. Using the \texttt{AMUSE} framework \citep{portegies_zwart_multiphysics_2009, portegies_zwart_multi-physics_2013, pelupessy_astrophysical_2013, portegies_zwart_astrophysical_2018}, we have constructed a hybrid N-body and MHD simulation environment for modeling cluster formation called \texttt{Torch} \citep{wall_collisional_2019,wall_modeling_2020}. 
+We combine stellar evolution, massive stellar radiative feedback, winds, and supernovae into an adaptive mesh MHD framework and couple this with high precision $N$-body dynamics, allowing us to follow the dynamics of individual stars within an actively forming cluster that exposes the gas to feedback from the massive stars. We test the hypothesis that the timing of massive star formation plays a vital role in the star formation and star cluster assembly processes because once formed, massive stars disrupt the natal gas cloud, limit global star formation efficiency (SFE), and promote the formation of stellar subclusters while hindering their assembly into a young massive cluster.
+
+We test the impact of early forming massive stars by comparing simulations with identical initial conditions but varying masses for the first formed star, randomly choosing it from the IMF in our fiducial run, or forcing it to have a mass of 50, 70, or 100~M$_\odot$.
+
+We describe our simulation initial conditions and parameter space in Section \ref{sec:p1-methods}. We analyze the effects of early forming massive stars on the gas and star cluster formation in Section \ref{sec:p1-analysis}. We discuss our results, compare them to previous works and note the limitations of our model in Section \ref{sec:p1-discussion}, and finally conclude in Section \ref{sec:p1-conclusion}. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Paper 1 Methods %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Methods} \label{sec:p1-methods}
+
+\texttt{Torch}\footnote{\url{https://bitbucket.org/torch-sf/torch/src/main} using commit \texttt{ 811d35ea069ca4a7e099e62bb4f0580f0a49cf29} for runs presented in this paper.} \citep{wall_collisional_2019} couples the adaptive mesh MHD code \texttt{FLASH} \citep{fryxell_flash_2000}, including modules implementing heating and cooling, ray-traced radiative transfer \citep{baczynski_fervent_2015}, and sink particle creation module \citep{federrath_modeling_2010} with the \texttt{AMUSE} framework. 
+Within \texttt{AMUSE}, we also use the $N$-body dynamics solver \texttt{ph4} \citep{mcmillan_simulations_2012}, the binary and close encounter modules \texttt{multiples} \citep{portegies_zwart_astrophysical_2018} and \texttt{smalln} \citep{hut_building_1995,mcmillan_binary--single-star_1996}, as well as the stellar evolution module \texttt{SeBa} \citep{portegies_zwart_population_1996}.
+
+\texttt{FLASH} is integrated into \texttt{AMUSE} using the hierarchical coupling strategy \citep{portegies_zwart_non-intrusive_2020}, which is a generalization of the gravity bridge scheme developed by \citet{fujii_bridge_2007}.
+With this coupling, we are able to model self-gravitating, radiatively heated and cooled, magnetized GMCs, while also forming stars from the gas and resolving individual stellar dynamics. Within FLASH, we use an HLLD Reimann solver \citep{miyoshi_multi-state_2005} with order 3 PPM reconstruction \citep{colella_piecewise_1984}. If a particularly strong shock occurs that triggers numerical instability, we briefly switch to the more diffusive HLL solver \citep{einfeldt_godunov-type_1991} with first order Godunov reconstruction \citep{godunov_finite_1959}.
+Our method of converting collapsing gas into stars uses \texttt{FLASH}'s sink particle module \citep{federrath_modeling_2010} which replaces Jeans unstable gas \citep{truelove_jeans_1997} with a sink particle (sink from here on) with a mass equivalent to the replaced gas (see \citealt{federrath_modeling_2010} for details on sink creation and accretion criteria). 
+
+The adaptive mesh is required to refine such that the \citet{truelove_jeans_1997} length is resolved by 4 or more cells. 
+The computational domain is a cube of size 17.5 pc. At the top refinement level, the entire grid is represented by a single block of $16^3$ cells. Each successive refinement level can break a block up into four smaller blocks. Our runs have a maximum refinement level of 3, on which cells are 0.27 pc on a side. The outer edges of the computational domain are governed by outflow boundary conditions to allow gas to properly escape from the star forming region.
+
+We evolve four simulations with identical initial conditions. In the first, we treat the simulation as a standard \texttt{Torch} run by with the usual physical prescriptions. In the other runs, the first star to be born to have a mass of 50, 70, or 100~M$_\odot$ (referred to as the 50M, 70M, and 100M runs respectively). 
+We evolve the simulations until star formation ceases or the forced massive star goes supernova ($\sim6$~Myr total or 4 Myr after star formation begins). In the case of the 100M run, nearly all of the gas and stars eventually escape the computational domain. This allows for large timesteps and a simulation that extends further in time than the other runs.
+
+\subsection{Initial Conditions}
+
+We initialize a $10^4$~M$_{\odot}$ GMC as a spherical cloud with a radius of 7.25 pc and with a Gaussian density distribution \citep{bate_modelling_1995} with a standard deviation of 4.89 pc. The cloud is also surrounded by a low density background medium. All gas has solar metallicity, which remains constant throughout the simulations. No background galactic gravitational potential is applied.
+We initialize the cloud and background medium to be in pressure and thermal equilibrium and choose the gas densities and temperature accordingly. The spherical cloud is in the cold neutral medium phase with the central gas density being 521.5 cm$^{-3}$ at a temperature of 20.6 K. The cloud edge density is 1/3 the central density. The surrounding low-density, higher-temperature gas is in the warm neutral medium phase with density 1.3 cm$^{-3}$ and temperature 6105.3 K.
+We apply a turbulent Kolmogorov velocity distribution (R. W\"unsch 2015, personal communication) to the dense gas such that it is subvirial with a virial ratio $\alpha = 2T/|U| = 0.12$, where $T$ is the total kinetic energy and $|U|$ is the magnitude of the potential energy. Low virial parameter clouds are appropriate for regions containing massive star formation \citep{kauffmann_low_2013} and such low virial parameter clouds have been catalogued \citep{roman-duval_physical_2010, wienen_ammonia_2012}.
+A subvirial initial state provides an environment where star formation occurs readily in dense regions and tends to reduce the effect of early forming massive stars due to the reduced penetrating power of the feedback mechanisms through the dense gas.
+We initialize the cloud with a uniform $3\,\mu G$ magnetic field along the z-axis and allow the gas turbulence to mix the field, mirroring the setup defined by \citet{wall_collisional_2019,wall_modeling_2020}.\footnote{Runs M3f and M3f2 in \citet{wall_modeling_2020} did not include magnetic fields due to an incorrect initialization procedure; this oversight has been corrected so all our runs begin with the uniform magnetic field.} 
+We also apply a background far ultraviolet radiation field with a constant flux of 1.7$G_{0}$ \citep{draine_photoelectric_1978}, where $G_{0}=1.6\times10^{-3}$ ergs s$^{-1}$ is the \citet{habing_interstellar_1968} flux. We estimate the extinction of the far ultraviolet flux using the local Jeans length \citep{truelove_jeans_1997}. We also assume a constant gas ionization rate due to cosmic rays $\zeta=10^{-17}$s$^{-1}$.
+
+
+\subsection{Sink Properties and Star Formation}
+
+As the dense gas collapses, sinks may form at the highest levels of refinement if the conditions detailed in Section 2.2 of \citet{federrath_modeling_2010} are satisfied. Sinks in our simulation have accretion radii of 0.67 pc. They are fixed to grid cell centers and move at each time step to the cell of lowest gravitational potential within their accretion radii. Sinks also merge together if their radii overlap.
+
+Once a sink forms, we assign to it a list of random stellar masses sampled from the \citet{kroupa_initial_2002} IMF with a maximum of 150 M$_\odot$ and a minimum of 0.08 M$_\odot$, following \citet{weidner_maximum_2006}, \citet{sormani_simple_2017} and \citet{wall_collisional_2019}. Once a sink has accreted enough material to match or exceed the mass of the next star to be formed, a non-accreting star particle (star from here on) is placed on the grid inside of the sink radius and the same mass is removed from the sink. The initial position of a new star is randomly sampled from a spherical Gaussian distribution positioned at the center of the sink. The initial velocity components of a star are sampled from a Gaussian distribution with a scale set to the speed of sound of the gas on which its parent sink is sitting.
+The sink can then continue to accrete gas and the star is permitted to move throughout the computational domain under the gravitational influences of the gas, sinks, and other stars. Sink accretion may continue until the local gas reservoir is exhausted, or the gas is heated by ionization or shocks from a massive star.
+
+Stars are not tied to the structure of the computational mesh, but do exert gravitational forces on and experience gravitational forces from the gas as well as other stars and sinks. Stars start at zero-age on the main sequence (ZAMS). Stars above 7 M$_{\odot}$ produce feedback effects in the forms of photoelectric heating and ionizing fluxes, stellar winds, and supernovae. These feedback mechanisms are injected into the computational domain based on the star's evolution as modeled in \texttt{SeBa}.\footnote{We updated the time step determination process in \texttt{Torch} to ensure massive stars take small enough \texttt{SeBa} evolution steps compared to the current gas dynamical timestep to resolve evolutionary changes in their properties.}
+Since stars are placed at ZAMS, massive stars begin their feedback the instant they are placed onto the grid. We therefore do not resolve any earlier feedback effects that take place during the massive star accretion phase. \texttt{SeBa} also models the deaths of massive stars, taking stellar mass, end-of-life composition, and metallicity into account when determining supernova types. Only the early-forming massive stars reach the supernova stage in our runs. They all detonate as supernovae, as their metallicity places them outside the regime of massive stars that directly collapse to a black hole \citep{heger_how_2003}.
+
+\subsection{Early Forming Massive Stars}
+Spawning a massive star in a typical \texttt{Torch} run is a rare event. Each sink has tens of thousands of stars in its stellar mass list but only a few dozen are very massive ($\ge50$~M$_{\odot}$) and they are randomly placed within the list. Therefore, within our computational model it is unlikely yet possible for a sink to have a very massive star as one of its first mass list entries. To explore the effects of the early formation of a very massive star, we force the first-formed sink to have either a 50, 70, or 100 M$_{\odot}$ star as the first entry of its mass list. 
+Before the sink begins accreting gas for the 50, 70 or 100 M$_{\odot}$ star, our implementation allows for the formation of 6 stars (the most massive of which is 0.8 M$_\odot$ and an average mass of 0.45 M$_\odot$). 
+
+The chosen parent sink for the very early forming massive star is also the first sink to form. This was a deliberate choice, as this sink forms near the center of the collapsing cloud, thus has a substantial supply of infalling material to accrete, and so can spawn the very massive star as the first born from the sink. Other sink particles are still able to form elsewhere in the collapsing cloud if the formation conditions are satisfied. Indeed, another sink does form around 6-7 parsecs from and 500 kyr after the parent. In each forced run, this sink is able to form $\sim24$~M$_\odot$ of stars (29 total stars with the most massive being 9.8M$_\odot$) before the early forming massive star forms.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Paper 1 Analysis %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Analysis}\label{sec:p1-analysis}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Paper 1 Discussion %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}\label{sec:p1-discussion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Paper 1 Conclusion %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}\label{sec:p1-conclusion}
+
+\chapter[VorAMR]{VorAMR: A novel method for translating data from any MHD code to an adaptive block data structure}
+\section{Overview}
+VorAMR provides three obvious benefits to the domain of computational hydrodynamics. One is of general utility, the second is of special significance to my research field of star formation simulations, and the third is of philosophical and normative importance.
+
+From a utilitarian perspective, VorAMR provides a novel way to visualize Voronoi mesh-based hydrodynamical data. Voronoi meshes are notoriously difficult to produce visualizations from and research groups will often rely on sub-optimal approximations. A common method is to approximate each Voronoi mesh cell as a particle and visualize the data as one would SPH data. This is not ideal as one would lose all semblance of the original Voronoi mesh. Otherwise, researchers are restricted to voxelizing the entire mesh as a 3D render, a computationally intense process which still does not allow for simple projection or slice plots. On the other hand, visualizations such as slices and projections from AMR block-based data is much simpler. Since VorAMR interpolates Voronoi data into a AMR grid, my tool provides a way for researchers using Voronoi mesh codes to visualize their data in a way that approaches the original Voronoi structure without having to develop their own visualization tools or rely on sub-optimal approximations.
+
+From the perspective of my personal research goals, VorAMR represents a critical linkage in the star cluster simulation pipeline which will allow my research group to initialize star cluster simulations using giant molecular cloud (GMC) initial conditions from galactic-scale simulations. The star formation process is influenced by physics from an enormous range of length scales: galactic potential and outflows down to the dynamics and feedback from individual stars. A single star has significant physical influence on scales of 1e-5 parsecs or less, while a fully simulated galaxy is of the scale 1e5 parsecs. The range of length scales prohibits any one simulation from including all physical processes without significant approximations. For example, a simulation of an entire galaxy may include single particles that represent thousands or tens of thousands of stars. Or, a simulation of a single GMC may include a background galactic potential without actually simulating the galactic dynamics. My research group particularly simulates individual GMCs which then forms star clusters, because of the computational restriction, we are forced to initialize our GMCs with approximations. Typically we initialize a GMC as a perfect sphere of gas with a random velocity distribution. Ideally, we would use a GMC model that was generated under realistic galactic influences. VorAMR accomplishes exactly this. My tool allows for the translation of data from galactic simulations computed using Voronoi mesh codes to AMR block-based codes like Torch thereby allowing for the simulation of cluster formation from GMCs that formed during realistic galactic simulations.
+
+From a philosophical perspective, VorAMR provides an avenue for increased and desperately needed collaboration between entrenched research groups. In computational astrophysics, extraordinarily complicated software suites are required to simulate aspects of the universe. Generations of scientists will adopt, use, contribute to, and pass on their specialized simulation software of choice. A problem arises when entire research groups become irreparably entwined with unique but isolated software. This can lead to highly unfortunate intellectual quagmires where computational advancements made in one software suite is difficult if not impossible to translate to a another suite due to the computational rigor required. I believe researchers ought to collaborate with each other and maximize the reach and spread of their data and computational techniques. Open source code is a brilliant example of this, but VorAMR goes one step further and enables groups to translate data into their own familiar frameworks without the trouble of learning a new software suite.
 \chapter{Conclusions and Future Work}
 
 \end{thesis}
